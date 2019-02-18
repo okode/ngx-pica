@@ -1,10 +1,9 @@
-import {Injectable} from '@angular/core';
-import {Subject, Observable, Subscription} from 'rxjs';
-import {NgxPicaErrorInterface, NgxPicaErrorType} from './ngx-pica-error.interface';
-import {NgxPicaResizeOptionsInterface} from './ngx-pica-resize-options.interface';
-import {NgxPicaExifService} from './ngx-pica-exif.service';
-import Pica from 'pica';
-
+import { Injectable } from '@angular/core';
+import { Subject, Observable, Subscription } from 'rxjs';
+import { NgxPicaErrorInterface, NgxPicaErrorType } from './ngx-pica-error.interface';
+import { NgxPicaResizeOptionsInterface } from './ngx-pica-resize-options.interface';
+import { NgxPicaExifService } from './ngx-pica-exif.service';
+import Pica from 'pica/dist/pica.js';
 
 declare let window: any;
 
@@ -62,7 +61,12 @@ export class NgxPicaService {
         return resizedImage.asObservable();
     }
 
-    public resizeImage(file: File, width: number, height: number, options?: NgxPicaResizeOptionsInterface): Observable<File> {
+    public resizeImage(
+        file: File,
+        width: number,
+        height: number,
+        options?: NgxPicaResizeOptionsInterface
+    ): Observable<File> {
         const resizedImage: Subject<File> = new Subject();
         const originCanvas: HTMLCanvasElement = document.createElement('canvas');
         const ctx = originCanvas.getContext('2d');
@@ -195,7 +199,13 @@ export class NgxPicaService {
         return compressedImage.asObservable();
     }
 
-    private getCompressedImage(canvas: HTMLCanvasElement, type: string, quality: number, sizeInMB: number, step: number): Promise<Blob> {
+    private getCompressedImage(
+        canvas: HTMLCanvasElement,
+        type: string,
+        quality: number,
+        sizeInMB: number,
+        step: number
+    ): Promise<Blob> {
         return new Promise<Blob>((resolve, reject) => {
             this.picaResizer.toBlob(canvas, type, quality)
                 .catch((err) => reject(err))
@@ -203,8 +213,8 @@ export class NgxPicaService {
                     this.checkCompressedImageSize(canvas, blob, quality, sizeInMB, step)
                         .catch((err) => reject(err))
                         .then((compressedBlob: Blob) => {
-                                resolve(compressedBlob);
-                            }
+                            resolve(compressedBlob);
+                        }
                         );
                 });
         });
@@ -247,7 +257,7 @@ export class NgxPicaService {
     }
 
     private blobToFile(blob: Blob, name: string, type: string, lastModified: number): File {
-        return new File([blob], name, {type: type, lastModified: lastModified});
+        return new File([blob], name, { type: type, lastModified: lastModified });
     }
 
     private bytesToMB(bytes: number) {
